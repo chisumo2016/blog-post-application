@@ -2,6 +2,7 @@
     1: Install of new application - Done
     2: Setup Database Connection  - Done
     3: Add Database Creditential  - Done
+    4:  Pa$$w0rd!
 
 ## INSTALLING LARAVEL BREEZE
     1. Installing the Authentication system with Laravel Breeze .
@@ -171,7 +172,16 @@
     8: Run DB SEED CLI
             php artisan db:seed
     9: VIEW ON DATABASE - PASSED
-        
+
+## SETTING UP ARTICLE ROUTES
+    - Open the web file
+        Route::resource('articles', ArticleController::class)->except(['index','show']);
+    - Whe the user has been registered will redirected to the dashboard
+        http://blogpost-application.test/dashboard
+    - Front view route
+        Route::resource('/articles', ArticleController::class)->only(['index','show']);
+    - Backend route 
+        Route::resource('/dashboard/articles', ArticleController::class)->except(['index','show']);
 
 
     
