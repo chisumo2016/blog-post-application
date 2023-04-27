@@ -93,10 +93,85 @@
     1: Setup the application structure before we continue on .
              php artisan make:model Tag -r -f -m
              php artisan make:model Category -r -f -m
-             php artisan make:model Post  -r -f -m   
+             php artisan make:model Post  -r -f -m  
+
+## INSERTING DATA USING FACTORIES AND SEEDERS
+    1: Insert data will real data
+    2: Open the CLI command 
+        php artisan make:seeder CategorySeeder
+    3: We gonna create a Json File 
+            database/data/categories.json
+    4: Open the Category Seeder File and call the json
+            $json = File::get('database/data/categories.json');
+
+            /**Decode into ana array*/
     
+            $categories = collect(json_decode($json,true));
+    
+            $categories->each(function ($category){
+                Category::create([
+                    'name'          => $category['name'],
+                    'description'   => $category['description'],
+                    'slug'          => $category['slug'],
+                ]);
+            });
+    5: Open the Database Seeder and call Category
+        
+        $this->call(CategorySeeder::class);
 
+    6: Genereate the rest of model via Factories
+        . Article Faatories
 
+                $title = fake()->unique()->sentence;
+                $slug  = Str::slug($title);
+
+                public function definition(): array
+                {
+                    $title = fake()->unique()->sentence;
+                    $slug  = Str::slug($title);
+            
+                    return [
+                        'title'         => $title,
+                        'slug'          => $slug,
+                        'excerpt'       => fake()->paragraphs(2, true),
+                        'description'   => fake()->paragraphs(8, true),
+                        'status'        => true,
+                        'user_id'       => User::inRandomOrder()->value('id'),
+                        'category_id'   => Category::inRandomOrder()->value('id')
+                    ];
+                }
+
+        . Tag  Faatories
+
+            public function definition(): array
+            {
+                $name = fake()->unique()->word;
+                $slug = Str::slug($name);
+        
+                return [
+                    'name' => $name,
+                    'slug' => $slug
+                ];
+            }
+    
+    
+    7: Open the Database Seeder
+        public function run(): void
+        {
+            //Order does matter
+            $this->call(CategorySeeder::class);
+    
+            User::factory()->count(10)->create();
+    
+            Article::factory()
+                ->has(Tag::factory()->count(2))
+                ->count(50)
+                ->create();
+        }
+    8: Run DB SEED CLI
+            php artisan db:seed
+    9: VIEW ON DATABASE - PASSED
+        
 
 
     
