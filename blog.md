@@ -183,5 +183,17 @@
     - Backend route 
         Route::resource('/dashboard/articles', ArticleController::class)->except(['index','show']);
 
+## SETTING UP THE FRONTEND PAGES
+    https://gist.github.com/codewithdary/2071f43fc171ebe00be4b9f523fb5998
+    - create a new directory inside the views and call articles
+        .articles
+            resources/views/articles/index.blade.php
+            resources/views/articles/create.blade.php
+            resources/views/articles/edit.blade.php
+            resources/views/articles/show.blade.php
+                    layouts
+                        resources/views/articles/layouts/app.blade.php
+                        resources/views/articles/layouts/navbar.blade.php
+
 
     
