@@ -36,4 +36,56 @@
                     $table->foreignId('tag_id')->constrained('tags')->cascadeOnDelete();
     5: Migrate CLI
         php artisan migrate
+
+
+## DEFINING MODELS / RELATIONSHIP
+    1: Add the Mass Assigment to all Models
+            Article
+            Category
+            Tag
+            User 
+    2: Define the relation between two models
+         . one-to-many relationship (User and Article)
+
+                . Article Model 
+
+                        public  function  user() : BelongsTo
+                        {
+                            return $this->belongsTo(User:: class); //FK user_id
+                        }
+
+                        public  function  category() : BelongsTo
+                        {
+                            return $this->belongsTo(Category:: class); //FK category_id
+                        }
+
+                . The above is an inverse of one to many relationship
+
+    3: Another relationship is between Article and Tag
+        . Open Article
+                public  function  tags():BelongsToMany
+                {
+                    return $this->belongsToMany(Tag::class);
+                }
+
+    4: Open the Category Model   and  add hasMany
+        1:M
+    
+           public  function  articles(): HasMany
+            {
+                return $this->hasMany(Article::class);
+            } 
+    5: Open the User Model   and  add hasMany
+        1:M
+    
+           public  function  articles(): HasMany
+            {
+                return $this->hasMany(Article::class);
+            } 
+
+    6: Open the Tag Models 
+
+
+
+
     
