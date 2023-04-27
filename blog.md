@@ -83,7 +83,18 @@
                 return $this->hasMany(Article::class);
             } 
 
-    6: Open the Tag Models 
+    6: Open the Tag Models  M:M
+         public  function  articles():BelongsToMany
+        {
+            return $this->belongsToMany(Article::class);
+        }
+
+## CREATING MODELS , CONTROLLERS , FACTORIES AND MIGRATIONS
+    1: Setup the application structure before we continue on .
+             php artisan make:model Tag -r -f -m
+             php artisan make:model Category -r -f -m
+             php artisan make:model Post  -r -f -m   
+    
 
 
 
