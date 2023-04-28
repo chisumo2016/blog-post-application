@@ -285,6 +285,137 @@
                 })->middleware(['auth', 'verified'])->name('dashboard');
         . Open the Dashboard.blade file display tthe innformation
 
+## THE CREATE() & STORE() METHODS
+    - Open the span of article button in index.blade.php file 
+        . paste the span inside the dashboard
+    - Open the ArticleController inside the create() method we gonna return view
+            .pluck() - retrive a specific column insteed of return all column
+
+            public function create() :View
+                {
+                    $categories = Category::pluck('name','id');
+                    
+                    $tags = Tag::pluck('name','id');
+                        
+                    return view('articles.create', compact('categories', 'tags'));
+                }
+    - Open the create.blade file , we should add the categories and tags within the loop .
+        . dd categories
+                {{ dd($categories) }}
+            
+            #items: array:3 [▼
+                1 => "Laravel"
+                2 => "Symfony"
+                3 => "Tailwind CSS"
+            ]
+                KEY => "VALUE
+        . Add the id's into the database VIA loop
+            @foreach($categories as $key =>$value)
+                <option value="x">
+                    x
+                </option>
+            @endforeach
+
+        .  example      value="x" = x: key of our category equivalent to id
+            <option value="x">
+                   {{value}}
+            </option>
+    - The complete code for our categories 
+            @foreach($categories as $key =>$value)
+                <option value="{{$key}}">
+                    {{ $value }}
+                </option>
+            @endforeach
+
+    - Let us do to our Tags, same a aboove
+             @foreach($tags as $key => $value)
+                <option value="{{$key}}">
+                    {{ $value }}
+                </option>
+             @endforeach
+
+    - Open the ArticleController in store() method
+        . dd() our request
+            dd($request);
+             [▼
+                  "_token" => "0vATdtJAKokSP9BkKuJESgXFafPC5jr8UtLnnls4"
+                  "status" => "on"
+                  "title" => "Test"
+                  "excerpt" => "teteteete"
+                  "description" => "tdtdtdttdtd"
+                  "category" => "2"
+                  "tags" => "84"
+            ]
+        . There's some issue on tags , we have selected multiple tags but we can see the string value 
+                "tags" => "84"
+        . Solution we need to add the bracket oon name
+            name="tags[]" is the part of group input
+            it used for multiple select fields.
+            When the user can select multiplee options
+        . Test again
+            [▼
+              "_token" => "0vATdtJAKokSP9BkKuJESgXFafPC5jr8UtLnnls4"
+              "status" => "on"
+              "title" => "Teest"
+              "excerpt" => "Teest"
+              "description" => "Teest"
+              "category" => "2"
+              "tags" => array:4 [▼
+                0 => "61"
+                1 => "14"
+                2 => "84"
+                3 => "85"
+              ]
+            ]
+    - Create a StoreArticleRequest CLI
+        php artisan make:request StoreArticleRequest
+        . Add the logic inside the StoreArticleRequest
+    - Continue with logic inside store() method
+                    article = Article::create([
+                        'title'         => $request->title,
+                        'slug'          => Str::slug($request->title),
+                        'excerpt'       => $request->excerpt,
+                        'description'   => $request->description,
+                        'status'        => $request->status === 'on'  ,
+                        'user_id'       => auth()->id(),
+                        'category_id'   => $request->category_id,
+                    ]);
+            
+                    /** Handle Pivot Table */
+            
+                    $article->tags()->attach($request->tags);
+            
+                    return redirect(route('articles.index'))->with('message', 'Article has been created Successfully');
+                }
+
+    - Add the flush Messsage on index
+                @if(session('message'))
+                    <div class="p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+                        <span class="font-medium">
+                            Success alert
+                        </span>
+                        {{ session('message') }}
+                    </div>
+                @endif
+
+    - We can Optimize better our store() controller
+            public function store(StoreArticleRequest $request)
+                {
+                    $article = Article::create([
+                        'slug'          => Str::slug($request->title),
+                        'status'        => $request->status === 'on'  ,
+                        'user_id'       => auth()->id(),
+                    ]+$request->validated());
+            
+                    /** Handle Pivot Table */
+            
+                    $article->tags()->attach($request->tags);
+            
+                    return redirect(route('articles.index'))->with('message', 'Article has been created Successfully');
+                }
+                    
+            
+        
 
             
     

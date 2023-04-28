@@ -8,7 +8,7 @@
             <div class="w-full mx-auto mb-10">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <form method="post"
-                          action=""
+                          action="{{ route('articles.store') }}"
                           class="px-8  mt-6 space-y-6">
                         @csrf
 
@@ -23,7 +23,14 @@
 
                         <div>
                             <x-input-label for="title" :value="__('Title')" />
-                            <x-text-input id="title" name="title" type="text" class="mt-1 block w-full" autocomplete="title" />
+                            <x-text-input
+                                id="title"
+                                name="title"
+                                type="text"
+                                class="mt-1 block w-full"
+                                autocomplete="title"
+                            />
+
                             @error('title')
                             <div class="text-red-500">{{ $message }}</div>
                             @enderror
@@ -31,15 +38,21 @@
 
                         <div>
                             <x-input-label for="excerpt" :value="__('Excerpt')" />
-                            <textarea name="excerpt" class="mt-1 block w-full h-20 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"> </textarea>
+                            <textarea
+                                name="excerpt"
+                                class="mt-1 block w-full h-20 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"></textarea>
+
                             @error('excerpt')
                             <div class="text-red-500">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div>
-                            <x-input-label name="description" for="description" :value="__('Description')" />
-                            <textarea class="mt-1 block w-full h-40 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"> </textarea>
+                            <x-input-label for="description" :value="__('Description')" />
+                            <textarea
+                                name="description"
+                                class="mt-1 block w-full h-40 border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"> </textarea>
+
                             @error('description')
                             <div class="text-red-500">{{ $message }}</div>
                             @enderror
@@ -47,23 +60,38 @@
 
                         <div>
                             <x-input-label for="category_id" :value="__('Category')" />
-                            <select name="category" class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                            <select
+                                name="category_id"
+                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+
                                 <option value="" disabled selected>
                                     Select your category
                                 </option>
-                                <option value="x">
-                                    x
-                                </option>
+                                @foreach($categories as $key => $value)
+                                    <option value="{{ $key }}">
+                                        {{ $value }}
+                                    </option>
+                                @endforeach
                             </select>
+
                             @error('category_id')
                             <div class="text-red-500">{{ $message }}</div>
                             @enderror
+
                         </div>
 
                         <div>
                             <x-input-label for="tags" :value="__('Tags')" />
-                            <select multiple name="tags" id="countries_multiple" class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-                                <option value="x">x</option>
+                            <select multiple
+                                    name="tags[]"
+                                    id="countries_multiple"
+                                    class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+
+                               @foreach($tags as $key=>$value)
+                                    <option value="{{$key}}">
+                                        {{ $value }}
+                                    </option>
+                               @endforeach
                             </select>
                         </div>
 

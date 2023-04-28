@@ -10,12 +10,21 @@
       </span>
     </div>
 
+        @if(session('message'))
+            <div class="p-4 mb-4 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+                <span class="font-medium">
+                    Success alert
+                </span>
+                {{ session('message') }}
+            </div>
+        @endif
+
        <div class="border-b-2 border-neutral-700 pb-10 pt-10">
                 @forelse($articles as $article)
             <span class="sm:float-right float-left text-gray-400">
                 {{ $article->created_at->format("M jS Y") }},
 
-                BY {{ $article->user->name  }}
+                BY {{ $article->user->name}}
 
             </span>
 
