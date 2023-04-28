@@ -195,5 +195,61 @@
                         resources/views/articles/layouts/app.blade.php
                         resources/views/articles/layouts/navbar.blade.php
 
+## THE INDEX() METHOD
+    - Add the logic inside the index method in ArticleController
+         public function index()
+            {
+               $articles = Article::with(['user', 'tags'])->get();
+        
+               return view('articles.index', compact('articles'));
+            }
+    - Open the index.blade.php annd loop over
+        1: 
+            @forelse($articles as $article)
+            @empty
+                  <h2 class="hover:text-red-700 sm:w-3/5 transition-all text-white sm:pt-0 pt-10 text-3xl sm:text-4xl font-bold sm:pb-2 w-full block">
+                        Unfortunately, we have not found any articles .
+                    </h2>
+             @endforelse
+
+        2:   @foreach(($articles as $article)
+
+             @endforeach
+
+        3: Display the  Date 
+            {{ $article->created_at->format("M jS Y") }},
+
+        4: Access the Relationship in blade , we can add the dot notation to chain the relationship .
+            to the variable representing the model 
+            . Sinnce we have the Article Model , we have send the relationship using user().
+            . Example code
+                {{ $article->user->name  }}
+
+        5: To show a speciific article  based on the slug
+            .example code 
+                    <a href="{{ route('articles.show', $article->slug) }}">
+
+        6: To Access the tags via relationship via the Article Model
+            . Tags are coming from Pivot table , we need to loop them .
+            .example of the code to dispay the tags in fron ennd
+
+             @foreach($article->tags as $tag)
+                {{$tag->name}}
+             @endforeach
+        7: To implement the Pagination  in Article Controller
+             public function index()
+            {
+                //$articles = Article::with(['user', 'tags'])->latest()->paginate();
+                $articles = Article::with(['user', 'tags'])->latest()->simplePaginate();
+        
+               return view('articles.index', compact('articles'));
+            }
+        8 : Add the method in blade to show the paggination 
+            . code example
+                <div class="py-20">
+                {{ $articles->links() }}
+                </div>
+                    
+          
 
     

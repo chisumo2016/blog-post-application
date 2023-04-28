@@ -1,35 +1,49 @@
-@extends('article.layouts.app')
+@extends('articles.layouts.app')
 
 @section('content')
+    <div class="space-y-2 xl:items-baseline xl:space-y-0 w-4/5 pt-20 sm:w-3/5 mx-auto">
     <div class="w-full mx-auto mb-10">
        <span class="block inline text-md text-white transition-all hover:text-gray-100 font-bold uppercase">
-           <a href="/" class="bg-red-700 rounded-md py-3 px-5">
+           <a href="{{ route('articles.create') }}" class="bg-red-700 rounded-md py-3 px-5">
                 Create Article
            </a>
       </span>
     </div>
 
-    <div class="space-y-2 xl:items-baseline xl:space-y-0 w-4/5 pt-20 sm:w-3/5 mx-auto">
-        <div class="border-b-2 border-neutral-700 pb-10 pt-10">
+       <div class="border-b-2 border-neutral-700 pb-10 pt-10">
+                @forelse($articles as $article)
             <span class="sm:float-right float-left text-gray-400">
-                8 March 2023, by Code With Dary
+                {{ $article->created_at->format("M jS Y") }},
+
+                BY {{ $article->user->name  }}
+
             </span>
 
-            <a href="">
-                <h2 class="hover:text-red-700 sm:w-3/5 transition-all text-white sm:pt-0 pt-10 text-3xl sm:text-4xl font-bold sm:pb-2 w-full block">
-                    Safe Hands for your bold product plans.
-                </h2>
-            </a>
+                <a href="{{ route('articles.show', $article->slug) }}">
+                    <h2 class="hover:text-red-700 sm:w-3/5 transition-all text-white sm:pt-0 pt-10 text-3xl sm:text-4xl font-bold sm:pb-2 w-full block">
+                        Safe Hands for your bold product plans.
+                    </h2>
+                </a>
 
-            <p class="text-gray-400 leading-8 py-6 text-lg w-full sm:w-3/5">
-                Laravel is a web application framework with expressive, elegant syntax. We’ve already laid the foundation — freeing you to create without sweating the small things.
-            </p>
+                <p class="text-gray-400 leading-8 py-6 text-lg w-full sm:w-3/5">
+                   {{ $article->excerpt  }}
+                </p>
 
-            <span class="block inline text-xs text-white transition-all hover:text-gray-100 font-bold pr-2 uppercase">
-            <a href="/" class="bg-red-700 rounded-md py-1 px-3">
-                Laravel
-            </a>
+                @foreach($article->tags as $tag)
+                   <span class="block inline text-xs text-white transition-all hover:text-gray-100 font-bold pr-2 uppercase">
+                    <a href="/" class="bg-red-700 rounded-md py-1 px-3">
+                       {{$tag->name}}
+                    </a>
             </span>
-        </div>
+                @endforeach
+                @empty
+                    <h2 class="hover:text-red-700 sm:w-3/5 transition-all text-white sm:pt-0 pt-10 text-3xl sm:text-4xl font-bold sm:pb-2 w-full block">
+                        Unfortunately, we have not found any articles .
+                    </h2>
+                @endforelse
+           <div class="py-20">
+               {{ $articles->links() }}
+           </div>
+            </div>
     </div>
 @endsection
