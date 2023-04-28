@@ -503,8 +503,38 @@
         </form>
 
             
-    
+## USING POLICIES FOR UNAUTHORIZED USERS
+    - The only authenticated user can delete and update the Post
+        . Middleware 
+        . Policy
+    - Allow to Perfom particular action  CRUD.
+    - Create a ArtiiclePolicy via CLI , W/C model should policy associated with
+        php artisan make:policy ArticlePolicy --model=Article
+    - Register our policy AuthServiceProvider directory . (app/Providers/AuthServiceProvider.php)
+                protected $policies = [
+                Article::class =>'App\Policies\ArticlePolicy'
+            ];
                     
-          
+    - Open the ArticleController   , tell the controller to use AuthorizesRequests;
+        . Tell the Laravel to use the incoming request .
+                use AuthorizesRequests;
+
+        . define the constructor
+                
+                public  function __construct()
+                {
+                    $this->authorizeResource(CLASS NAME OF THE MODEL WHICH THE POLICY IS ASSOCIATED WITH , NAME OF ROUTE PARAMETER CONTAIN THE MODEL ID);
+                }
+
+        . authorizeResource accept to parameter
+                . Class name of the model that the policy is associated with . (ARTICLE CLASS)
+                . Name of route parameter which contains the model ID .
+
+        . Code example
+            public  function __construct()
+            {
+                $this->authorizeResource(Article::class, 'article');
+            }
+    - Laravel will automatically authorized any incoming request by using the Article Policy .
 
     
