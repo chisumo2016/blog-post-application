@@ -249,6 +249,45 @@
                 <div class="py-20">
                 {{ $articles->links() }}
                 </div>
+
+## THE SHOW() METHOD
+    - Add logic to display the content via show method in ArticleController VIA model binding
+             public function show(Article $article)
+            {
+                return view('articles.show', compact('article'));
+            }
+    - 401 not found - Page doesnt exist .By defalut binding works with id column .PK
+    - As we're want to use the slug  instead of id column ,we should add another logic in the Article Model 
+            public  function  getRouteKeyName()
+            {
+                return 'slug';
+            }
+        . return the string as above
+    - Open the show.blade.php 
+        . Access the name via Article Model
+            {{$article->user->name }} 
+        . Display the date 
+            {{ $article->created_at->format("M jS Y") }}
+        . Access the  Category name via Article Model relationship
+            {{ $article->category->name }}
+        . Display all the tags , as we're working on many to many relationship .
+            . Article can have many tags .
+                    @foreach($article->tags as $tag)
+                        {{ $tag->name }}
+                    @endforeach
+    - To show an article for specific user
+        . open the web file and add the logic in dashbord
+                Route::get('/dashboard', function () {
+                 $articles = \App\Models\Article::where('user_id', auth()->id())->paginate();
+
+                return view('dashboard' ,compact('articles'));
+
+                })->middleware(['auth', 'verified'])->name('dashboard');
+        . Open the Dashboard.blade file display tthe innformation
+
+
+            
+    
                     
           
 
