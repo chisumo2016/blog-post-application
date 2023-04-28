@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreArticleRequest;
+use App\Http\Requests\UpdateArticleRequest;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
@@ -27,11 +28,8 @@ class ArticleController extends Controller
      */
     public function create() :View
     {
-        $categories = Category::pluck('name','id');
 
-        $tags = Tag::pluck('name','id');
-
-        return view('articles.create', compact('categories', 'tags'));
+        return view('articles.create', $this->getFormData());
     }
 
     /**
@@ -55,7 +53,7 @@ class ArticleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Article $article)
+    public function show(Article $article):View
     {
         return view('articles.show', compact('article'));
     }
@@ -63,17 +61,26 @@ class ArticleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Article $article)
+    public function edit(Article $article): View
     {
+        //array_merge(compact('article'), $this->getFormData());
 
+        return view('articles.edit', array_merge(compact('article'), $this->getFormData()));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Article $article)
+    public function update(UpdateArticleRequest $request, Article $article)
     {
-        //
+       $article->update($request->validated()+ [
+            'slug' => Str::slug($request->title)
+           ]);
+
+            /**Detach tag*/
+        $article->tags()->sync($request->tags);
+
+        return redirect(route('dashboard'))->with('message', 'Article has been updated Successfully');
     }
 
     /**
@@ -82,5 +89,14 @@ class ArticleController extends Controller
     public function destroy(Article $article)
     {
         //
+    }
+
+    private  function getFormData() : array
+    {
+        $categories = Category::pluck('name','id');
+
+        $tags = Tag::pluck('name','id');
+
+        return compact('categories', 'tags');
     }
 }

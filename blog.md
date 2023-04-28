@@ -414,7 +414,61 @@
                     return redirect(route('articles.index'))->with('message', 'Article has been created Successfully');
                 }
                     
+## THE EDIT() & UPDATE() METHODS
+    - Open the dashboard  and add the Edit button
+    - Focus on edit() functionality in ArticleController
+    - Create a private method to access the categories and tags ,to reduce code duplication.
+            private  function getFormData() : array
+                {
+                    $categories = Category::pluck('name','id');
             
+                    $tags = Tag::pluck('name','id');
+                    
+                    return compact('categories', 'tags');
+                }
+    - Access the getFormData() in create()
+        . $this->getFormData()
+    - Display the categories by looping 
+          <option value="x">
+            x
+         </option>
+            TO
+            @foreach($categories as $key=>$value)
+                <option value="{{ $key }}" {{ $article->category_id === $key ? 'selected' : '' }}>
+                    {{ $value }}
+                </option>
+            @endforeach
+    
+    - Display the tags by looping  , check if the value are in array 
+          <option value="x">
+            x
+         </option>
+            TO
+            @foreach($tags as $key => $value)
+                <option value="{{ $key }}" {{ in_array($key , $article->tags->pluck('id')->toArray()) ? 'selected' : '' }}>
+                    {{ $value }}
+                </option>
+            @endforeach
+
+    - Navigate to update() and dump
+    - Create UpdateArticleReques via CLI
+        php artisan make:request UpdateArticleRequest
+        .Add the logic inside the UpdateArticleRequest
+    - You can import the UpdateArticleRequest inside the update() method and add the logic to update
+                public function update(UpdateArticleRequest $request, Article $article)
+                    {
+                       $article->update($request->validated()+ [
+                            'slug' => Str::slug($request->title)
+                           ]);
+                
+                            /**Detach tag*/
+                        $article->tags()->sync($request->tags);
+                
+                        return redirect(route('dashboard'))->with('message', 'Article has been updated Successfully');
+                    }
+    - Add the error messagge using laravel components
+
+## THE DESTROY() METHOD
         
 
             

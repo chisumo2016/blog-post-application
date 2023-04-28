@@ -8,50 +8,84 @@
             <div class="w-full mx-auto mb-10">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <form method="post"
-                          action=""
+                          action="{{ route('articles.update',$article->slug) }}"
                           class="px-8  mt-6 space-y-6">
                         @csrf
+                        @method('PUT')
 
                         <div>
                             <x-input-label for="status" class="pb-2" :value="__('Status')" />
 
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" value="" class="sr-only peer">
+                                <input
+                                    {{ $article->status ? 'checked' : '' }} value="{{ $article->status }}"
+                                    type="checkbox"
+                                    class="sr-only peer">
                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                             </label>
                         </div>
 
                         <div>
                             <x-input-label for="title" :value="__('Title')" />
-                            <x-text-input id="title" name="title" type="text" class="mt-1 block w-full" autocomplete="title" />
+                            <x-text-input
+                                value="{{ $article->title }}"
+                                id="title"
+                                name="title"
+                                type="text"
+                                class="mt-1 block w-full" autocomplete="title" />
                         </div>
 
                         <div>
                             <x-input-label for="excerpt" :value="__('Excerpt')" />
-                            <x-textarea-input id="excerpt" name="excerpt" type="text" class="mt-1 block w-full h-20" autocomplete="Excerpt" />
+                            <textarea
+                                id="excerpt"
+                                name="excerpt"
+                                type="text"
+                                class="mt-1 block w-full h-20"
+                                autocomplete="Excerpt" >{{ $article->excerpt }} </textarea>
                         </div>
 
                         <div>
                             <x-input-label for="description" :value="__('Description')" />
-                            <x-textarea-input id="description" name="description" type="text" class="mt-1 block w-full h-40" autocomplete="description" />
+                            <textarea
+                                id="description"
+                                name="description"
+                                type="text"
+                                class="mt-1 block w-full h-40" autocomplete="description" >{{ $article->description }} </textarea>
                         </div>
 
                         <div>
                             <x-input-label for="category" :value="__('Category')" />
-                            <select class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                            <select
+                                name="category_id"
+                                class="border-gray-300
+                                       dark:border-gray-700
+                                       dark:bg-gray-900
+                                       dark:text-gray-300
+                                       focus:border-indigo-500
+                                       dark:focus:border-indigo-600
+                                       focus:ring-indigo-500
+                                       dark:focus:ring-indigo-600
+                                       rounded-md shadow-sm">
                                 <option value="" disabled selected>
                                     Select your category
                                 </option>
-                                <option value="x">
-                                    x
-                                </option>
+                                @foreach($categories as $key=>$value)
+                                    <option value="{{ $key }}" {{ $article->category_id === $key ? 'selected' : '' }}>
+                                        {{ $value }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
 
                         <div>
                             <x-input-label for="tags" :value="__('Tags')" />
                             <select multiple id="countries_multiple" class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-                                <option value="x">x</option>
+                                @foreach($tags as $key => $value)
+                                    <option value="{{ $key }}" {{ in_array($key , $article->tags->pluck('id')->toArray()) ? 'selected' : '' }}>
+                                        {{ $value }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
 
