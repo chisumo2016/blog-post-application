@@ -455,13 +455,14 @@
         php artisan make:request UpdateArticleRequest
         .Add the logic inside the UpdateArticleRequest
     - You can import the UpdateArticleRequest inside the update() method and add the logic to update
+
                 public function update(UpdateArticleRequest $request, Article $article)
                     {
                        $article->update($request->validated()+ [
                             'slug' => Str::slug($request->title)
                            ]);
                 
-                            /**Detach tag*/
+                            /**Dettach tag*/
                         $article->tags()->sync($request->tags);
                 
                         return redirect(route('dashboard'))->with('message', 'Article has been updated Successfully');
@@ -469,7 +470,37 @@
     - Add the error messagge using laravel components
 
 ## THE DESTROY() METHOD
+    - Open the ArticleController in destroy and add the logic
+            public function destroy(Article $article):RedirectResponse
+            {
+                $article->delete();
         
+                return redirect(route('dashboard'))->with('message', 'Article has been deleted Successfully');
+            }
+        
+    - Have the delete button next to Edit in Dashbaord.blade.php
+        <form action="{{ route('articles.destroy', $article->slug) }}" method="post">
+            @csrf
+            @method('DELETE')
+            <button
+                class="
+            inline-flex
+            text-md
+            pb-6 pt-8
+            pr-3
+            py-2
+            leading-4
+            font-medium
+
+            text-red-400
+            hover:text-red-300
+            focus:outline
+            transition
+            ease-in-out duration-150
+            float-right">
+                Delete
+            </button>
+        </form>
 
             
     

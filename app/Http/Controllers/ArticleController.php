@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateArticleRequest;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -71,7 +72,7 @@ class ArticleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateArticleRequest $request, Article $article)
+    public function update(UpdateArticleRequest $request, Article $article):RedirectResponse
     {
        $article->update($request->validated()+ [
             'slug' => Str::slug($request->title)
@@ -86,9 +87,11 @@ class ArticleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Article $article)
+    public function destroy(Article $article):RedirectResponse
     {
-        //
+        $article->delete();
+
+        return redirect(route('dashboard'))->with('message', 'Article has been deleted Successfully');
     }
 
     private  function getFormData() : array
